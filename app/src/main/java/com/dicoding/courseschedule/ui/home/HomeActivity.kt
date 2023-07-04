@@ -31,42 +31,30 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
         supportActionBar?.title = resources.getString(R.string.today_schedule)
 
-        setupViewModel()
-    }
-
-    private fun setupViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            ListViewModelFactory.createFactory(this)
-        )[HomeViewModel::class.java]
-
-        viewModel.setQueryType(queryType)
-
-        viewModel.todaySchedule.observe(this, Observer(this::showTodaySchedule))
+        val viewFactory = ListViewModelFactory.createFactory(this)
+        viewModel = ViewModelProvider(this, viewFactory)[HomeViewModel::class.java]
+        viewModel.todaySchedule.observe(this, Observer {
+            showTodaySchedule(it)
+        })
     }
 
     private fun showTodaySchedule(course: Course?) {
         val cardHome = findViewById<CardHomeView>(R.id.view_home)
+        val tvEmptyHome = findViewById<TextView>(R.id.tv_empty_home)
         checkQueryType(course)
-        if (course != null) {
             course?.apply {
                 val dayName = DayName.getByNumber(day)
                 val time =
                     String.format(getString(R.string.time_format), dayName, startTime, endTime)
                 val remainingTime = timeDifference(day, startTime)
-
                 cardHome.apply {
                     setCourseName(courseName)
                     setLecturer(lecturer)
                     setTime(time)
                     setRemainingTime(remainingTime)
                 }
-                findViewById<TextView>(R.id.tv_empty_home).visibility =
-                    View.VISIBLE
             }
-        }
-        findViewById<TextView>(R.id.tv_empty_home).visibility =
-            if (course == null) View.VISIBLE else View.GONE
+        tvEmptyHome.visibility = if (course == null) View.VISIBLE else View.GONE
     }
 
     private fun checkQueryType(course: Course?) {

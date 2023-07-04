@@ -1,5 +1,6 @@
 package com.dicoding.courseschedule.ui.add
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.courseschedule.R
+import com.dicoding.courseschedule.ui.list.ListActivity
 import com.dicoding.courseschedule.util.TimePickerFragment
 import com.google.android.material.textview.MaterialTextView
 
@@ -103,7 +105,12 @@ class AddCourseActivity : AppCompatActivity(), TimePickerFragment.DialogTimeList
                         courseLecturer,
                         note
                     )
-                    finish()
+                    startActivity(
+                        Intent(
+                            this,
+                            ListActivity::class.java
+                        )
+                    )
                 } else {
                     Toast.makeText(
                         this,
