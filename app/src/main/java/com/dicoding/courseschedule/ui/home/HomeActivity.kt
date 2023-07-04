@@ -12,8 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.dicoding.courseschedule.R
 import com.dicoding.courseschedule.data.Course
 import com.dicoding.courseschedule.ui.add.AddCourseActivity
-import com.dicoding.courseschedule.ui.detail.DetailActivity
-import com.dicoding.courseschedule.ui.detail.DetailActivity.Companion.COURSE_ID
 import com.dicoding.courseschedule.ui.list.ListActivity
 import com.dicoding.courseschedule.ui.list.ListViewModelFactory
 import com.dicoding.courseschedule.ui.setting.SettingsActivity
@@ -50,24 +48,23 @@ class HomeActivity : AppCompatActivity() {
     private fun showTodaySchedule(course: Course?) {
         val cardHome = findViewById<CardHomeView>(R.id.view_home)
         checkQueryType(course)
-        course?.apply {
-            val dayName = DayName.getByNumber(day)
-            val time = String.format(getString(R.string.time_format), dayName, startTime, endTime)
-            val remainingTime = timeDifference(day, startTime)
+        if (course != null) {
+            course?.apply {
+                val dayName = DayName.getByNumber(day)
+                val time =
+                    String.format(getString(R.string.time_format), dayName, startTime, endTime)
+                val remainingTime = timeDifference(day, startTime)
 
-            cardHome.apply {
-                setCourseName(courseName)
-                setLecturer(lecturer)
-                setTime(time)
-                setRemainingTime(remainingTime)
-                setOnClickListener {
-                    val intent = Intent(this@HomeActivity, DetailActivity::class.java)
-                    intent.putExtra(COURSE_ID, course.id)
-                    startActivity(intent)
+                cardHome.apply {
+                    setCourseName(courseName)
+                    setLecturer(lecturer)
+                    setTime(time)
+                    setRemainingTime(remainingTime)
                 }
+                findViewById<TextView>(R.id.tv_empty_home).visibility =
+                    View.VISIBLE
             }
         }
-
         findViewById<TextView>(R.id.tv_empty_home).visibility =
             if (course == null) View.VISIBLE else View.GONE
     }
